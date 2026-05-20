@@ -27,7 +27,14 @@ let reconnectAttempts = 0;
 process.on('unhandledRejection', r => console.error('[ERROR]', r?.message || r));
 process.on('uncaughtException',  e => console.error('[CRASH]', e.message));
 
-// ── SEND PRODUCT MESSAGE (CORRECT TAG CARD) ──
+// ── HELPER FUNCTION ──
+const getExpiryDate = () => {
+  const d = new Date();
+  d.setDate(d.getDate() + 30);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
+// ── SEND TAGGED NEWSLETTER CARD ──
 const sendTaggedCard = async (sock, jid, msg) => {
   try {
     const imagePath = path.join(process.cwd(), 'assets', 'card.jpg');
@@ -38,16 +45,32 @@ const sendTaggedCard = async (sock, jid, msg) => {
 
     const imageBuffer = fs.readFileSync(imagePath);
 
+    const contextInfo = {
+      forwardingScore: 999,
+      isForwarded: true,
+      forwardedNewsletterMessageInfo: {
+        newsletterJid: '120363382023564830@newsletter',
+        newsletterName: "Deviant's Xopow",
+        serverMessageId: 1
+      },
+      entryPointConversionSource: `Ends on ${getExpiryDate()}`,
+      entryPointConversionApp: 'Code: 「☠︎」Lord Devine'
+    };
+
     await sock.sendMessage(jid, {
-      product: {
-        name: "Deviant's Xopow",
-        description: `Ends on Dec 31\nCode: Xopow\n\n🎭 *Deviant's CrashX* 🎭\n\n☐ Developer: VinnXopowj\n☐ Bot Name: Deviant's\n☐ Version: 20.0.0\n☐ Status: Free, Gratis!\n☐ Prefix: Multi\n☐ Type: Case\n\nPlease Press & Select The Button\nBelow To Display The Script Menu iii`,
-        currency_code: "USD",
-        price_1000: 0,
-        retailer_id: "Deviant's CrashX",
-        url: "",
-        productImage: imageBuffer
-      }
+      image: imageBuffer,
+      caption: `🎭 *Deviant's CrashX* 🎭
+
+☐ Developer: VinnXopowj
+☐ Bot Name: Deviant's
+☐ Version: 20.0.0
+☐ Status: Free, Gratis!
+☐ Prefix: Multi
+☐ Type: Case
+
+Please Press & Select The Button
+Below To Display The Script Menu iii`,
+      contextInfo: contextInfo
     }, { quoted: msg });
   } catch (err) {
     console.error('[ERROR] sendTaggedCard:', err.message);
