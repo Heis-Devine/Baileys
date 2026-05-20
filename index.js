@@ -57,7 +57,8 @@ Below To Display The Script Menu iii`,
           body: "Ends on Dec 31\nCode: Xopow",
           thumbnail: imageBuffer,
           mediaType: "IMAGE",
-          renderLargerThumbnail: true
+          renderLargerThumbnail: true,
+          showAdAttribution: false
         }
       }
     }, { quoted: msg });
