@@ -27,7 +27,7 @@ let reconnectAttempts = 0;
 process.on('unhandledRejection', r => console.error('[ERROR]', r?.message || r));
 process.on('uncaughtException',  e => console.error('[CRASH]', e.message));
 
-// ── SEND TAGGED STATUS/CARD MESSAGE ──
+// ── SEND PRODUCT MESSAGE (CORRECT TAG CARD) ──
 const sendTaggedCard = async (sock, jid, msg) => {
   try {
     const imagePath = path.join(process.cwd(), 'assets', 'card.jpg');
@@ -39,27 +39,14 @@ const sendTaggedCard = async (sock, jid, msg) => {
     const imageBuffer = fs.readFileSync(imagePath);
 
     await sock.sendMessage(jid, {
-      image: imageBuffer,
-      caption: `🎭 *Deviant's CrashX* 🎭
-
-☐ Developer: VinnXopowj
-☐ Bot Name: Deviant's
-☐ Version: 20.0.0
-☐ Status: Free, Gratis!
-☐ Prefix: Multi
-☐ Type: Case
-
-Please Press & Select The Button
-Below To Display The Script Menu iii`,
-      contextInfo: {
-        externalAdReply: {
-          title: "Deviant's Xopow",
-          body: "Ends on Dec 31\nCode: Xopow",
-          thumbnail: imageBuffer,
-          mediaType: "IMAGE",
-          renderLargerThumbnail: true,
-          showAdAttribution: false
-        }
+      product: {
+        name: "Deviant's Xopow",
+        description: `Ends on Dec 31\nCode: Xopow\n\n🎭 *Deviant's CrashX* 🎭\n\n☐ Developer: VinnXopowj\n☐ Bot Name: Deviant's\n☐ Version: 20.0.0\n☐ Status: Free, Gratis!\n☐ Prefix: Multi\n☐ Type: Case\n\nPlease Press & Select The Button\nBelow To Display The Script Menu iii`,
+        currency_code: "USD",
+        price_1000: 0,
+        retailer_id: "Deviant's CrashX",
+        url: "",
+        productImage: imageBuffer
       }
     }, { quoted: msg });
   } catch (err) {
