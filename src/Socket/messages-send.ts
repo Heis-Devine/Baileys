@@ -1180,6 +1180,9 @@ export const makeMessagesSocket = (config: SocketConfig) => {
 	}
 
 	const getMediaType = (message: proto.IMessage) => {
+		if (message.groupStatusMessageV2?.message) {
+			message = message.groupStatusMessageV2.message
+		}
 		if (message.imageMessage) {
 			return 'image'
 		} else if (message.videoMessage) {
